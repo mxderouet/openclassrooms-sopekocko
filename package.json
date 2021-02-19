@@ -1,0 +1,15 @@
+{
+  "name": "back-end",
+  "version": "1.0.0",
+  "description": "sopeckoco backend",
+  "main": "server.js",
+  "scripts": {
+    "test": "so-test",
+    "start": "node server.js"
+  },
+  "author": "mxderouet",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
