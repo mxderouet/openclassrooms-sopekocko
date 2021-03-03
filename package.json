@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "so-test",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "mxderouet",
   "license": "ISC",
