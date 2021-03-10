@@ -1,9 +1,9 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://mxderouet:<password>@cluster0.2qyyr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const stuffRoutes = require('./routes/stuff');
 const userRoutes = require('./routes/user');
+const path = require('path');
 
 mongoose.connect(uri,
   { useNewUrlParser: true,
@@ -12,6 +12,10 @@ mongoose.connect(uri,
   .catch((error) => console.log(error.message, 'Connexion à MongoDB échouée !'));
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded());
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/stuff', stuffRoutes);
 app.use('/api/stuff', stuffRoutes);
@@ -24,12 +28,12 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(bodyParser.json());
-
-app.post('/api/auth/signup', (req, res) => {
+app.post('/api/auth/signup', (req, res, next) => {
+  console.log('sign up');
     res.status(201).json({
       message: 'User created!'
     });
+    next();
 });
 
 app.use('/api/auth/loggin', (req, res, next) => {
@@ -37,6 +41,7 @@ app.use('/api/auth/loggin', (req, res, next) => {
   res.status(201).json({
     message: 'User Logged!'
   });
+  next();
 })
 
 module.exports = app;
