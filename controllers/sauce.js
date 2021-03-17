@@ -58,32 +58,39 @@ exports.likeSauce = (req, res, next) => {
     // we retrieve the sauce 
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
+            console.log(sauce);
             // this is the like & dislike logic
             switch (req.body.like) {
                 // 1 is for like
                 case 1: 
                     console.log(1);
-                    if (sauce.userId === req.body.userId && sauce.userLiked === 0) {
-                        sauce.userLiked.push(1, req.body.userId);
-                        break;
+                    if (!sauce.userLiked.includes(req.body.userId)) {
+                        console.log('ICI LIKE');
+                        debugger
+                        sauce.userLiked.push(req.body.userId);
+                        sauce.likes +=1;
+                        console.log('LIKED', sauce.userLiked, sauce.likes);
                     }
-                    break;
                 // 0 is a for reset
                 case 0:
-                    if (sauce.userId === req.body.userId) {
-                        sauce.userLiked = 0;
-                        sauce.userDisliked = 0;
-                        break;
+                    if (!sauce.userLiked.includes(req.body.userId)) {
+                        sauce.userLiked.push(req.body.userId);
+                        sauce.likes -=1;
+                        console.log('LIKED', userLiked);
                     }
-                    console.log(0);
+                    if (!sauce.userDisliked.includes(req.body.userId)) {
+                        sauce.userDisliked.push(req.body.userId);
+                        sauce.dislikes +=1;
+                        console.log('DISLIKED', userDisliked);
+                    }
                     break;
                 // -1 is for dislike    
                 case -1:
                     console.log(-1);
                     if (!sauce.userDisliked.includes(req.body.userId)) {
-                        sauce.userDisliked.push(1, req.body.userId);
+                        sauce.userDisliked.push(req.body.userId);
+                        sauce.dislikes -=1;
                         console.log('DISLIKED', userDisliked);
-                        break;
                     }
                     break;
                 default: 
@@ -91,7 +98,7 @@ exports.likeSauce = (req, res, next) => {
                     break;
             }
             sauce.userId = req.body.userId;
-            Sauce.updateOne({ _id: req.params.id }, { ...sauce.userDisliked, ...sauce.userLiked, ...sauce.userId, _id: req.params.id })
+            Sauce.updateOne({ _id: req.params.id }, { ...sauce.like, ...sauce.dislike, ...sauce.userDisliked, ...sauce.userLiked, ...sauce.userId, _id: req.params.id })
             .then(() => res.status(200).json({ message: 'Object modified!'}))
             .then(() => console.log(sauce))
             .catch(error => res.status(400).json({ error }));
