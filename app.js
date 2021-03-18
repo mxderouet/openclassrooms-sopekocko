@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const uri = "mongodb+srv://mxderouet:<password>@cluster0.2qyyr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 const sauceRoutes = require('./routes/sauce');
@@ -13,6 +14,8 @@ mongoose.connect(uri,
 
 const app = express();
 
+app.use(helmet());
+
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -26,21 +29,5 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/api/sauces', sauceRoutes);
 app.use('/api/auth', userRoutes);
-
-
-// app.post('/api/auth/signup', (req, res, next) => {
-//   console.log('sign up');
-//     res.status(201).json({
-//       message: 'User created!'
-//     });
-// });
-
-// app.use('/api/auth/loggin', (req, res, next) => {
-//   console.log('loggin');
-//   res.status(201).json({
-//     message: 'User Logged!'
-//   });
-//   next();
-// })
 
 module.exports = app;
