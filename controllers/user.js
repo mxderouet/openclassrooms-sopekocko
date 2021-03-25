@@ -3,6 +3,7 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res) => {
+    // bcrypt will hash the password for security reasons
     bcrypt.hash(req.body.password, 10)
     .then(hash => {
         const user = new User({
@@ -31,7 +32,9 @@ exports.login = (req, res) => {
                 userId: user._id,
                 token: jwt.sign(
                   { userId: user._id },
-                  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE2MTUzNzEyMzksImV4cCI6MTY0NjkwNzIzOSwiYXVkIjoid3d3LmV4YW1wbGUuY29tIiwic3ViIjoianJvY2tldEBleGFtcGxlLmNvbSIsIkdpdmVuTmFtZSI6IkpvaG5ueSIsIlN1cm5hbWUiOiJSb2NrZXQiLCJFbWFpbCI6Impyb2NrZXRAZXhhbXBsZS5jb20iLCJSb2xlIjpbIk1hbmFnZXIiLCJQcm9qZWN0IEFkbWluaXN0cmF0b3IiXX0.gJ92WGl2XgkeanQ6JBDAqzxHW0Q8TLDdog9ynjISFhCaJQ7LiG5hh-hMY2cLTALT',
+                  // we provide a Token hashed with a secret key that will be checked during auth
+                  process.env.JWT_SECRET_KEY,
+                  // the token will last maximum 24h
                   { expiresIn: '24h' }
                 )
             });

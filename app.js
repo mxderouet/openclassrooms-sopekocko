@@ -1,7 +1,9 @@
+
+require('dotenv').config()
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
-const uri = "mongodb+srv://mxderouet:<password>@cluster0.2qyyr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const uri = process.env.DB_URI;
 const sauceRoutes = require('./routes/sauce');
 const userRoutes = require('./routes/user');
 const path = require('path');
@@ -14,6 +16,7 @@ mongoose.connect(uri,
 
 const app = express();
 
+// protection against HTTP headers vulnerabilities
 app.use(helmet());
 
 app.use((req, res, next) => {
